@@ -1,0 +1,202 @@
+$color: royalblue;
+.container {
+    /* h1 { // 중첩
+        color: $color;
+    } */
+    > ul { // 자식 선택 방법
+        li {
+            font-size: 40px;
+            .name {
+                color: royalblue;
+            }
+            .age {
+                color: orange;
+            }
+        }
+    }
+}
+
+// 상위 선택자 참조
+
+.btn {
+    position: absolute;
+    &.active { // 상위 선택자가 & 로 치환 됨
+        color: red;
+    }
+}
+
+.list {
+    li{
+        &:last-child{
+            margin-right: 0;
+        }
+    }
+}
+
+.fs {
+    &-small {font-size:12px;}
+    &-medium {font-size:14px;}
+    &-large {font-size:16px;}
+}
+
+// 중첩 된 속성
+
+.box {
+    font: {
+        weight:bold;
+        size:10px;
+        family: sans-serif;
+    };
+    margin: {
+        top: 10px;
+        left: 20px;
+    };
+    padding: {
+        top: 10px;
+        bottom: 40px;
+        left: 20px;
+        right: 30px;
+    };
+}
+
+// 변수
+
+$size: 200px;
+
+.container {
+    position: fixed;
+    top: $size;
+    .item {
+        width: $size;
+        height: $size;
+        transform: translateX($size);
+    }
+}
+
+// 산술 연산
+
+div {
+    $size: 30px;
+    width: 20px + 20px;
+    height: 40px - 10px;
+    margin: 10px * 2;
+    // font-size: (30px / 2);
+    // font-size: $size / 2;
+    font-size: (10px + 12px) / 2;
+    padding: 20px % 7;
+}
+span {
+    font-size: 10px;
+    line-height: 10px;
+    font: 10px / 10px serif; // font-size / line-height font-family
+}
+
+div {
+    width: calc(100% - 200px);
+}
+
+// 재활용
+@mixin center($size, $color: tomato) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: $size;
+    background-color: $color
+}
+// 함수
+@function ratio($size, $ratio) {
+    @return $size * $ratio;
+}
+.container {
+    @include center(200px, red);
+
+    .item {
+        @include center(150px,green);
+    }
+}
+.box {
+    $width: 160px;
+    width: $width;
+    height: ratio($width, 9/16);
+    @include center(150px);
+}
+
+//  반복문
+@for $i from 1 through 10 { // 대부분 1부터 시작
+    .box:nth-child(#{$i}) {
+        width: 100px * $i;
+    }
+}
+
+// 색상 내장 함수
+
+.box {
+    $color: royalblue;
+    width: 100px;
+    height: 50px;
+    margin: 20px;
+    border-radius: 10px;
+    background-color: $color;
+    &:hover{
+        background-color: darken($color, 10%);
+    }
+    &.built-in {
+        /* background-color: mix($color, red); // 색상을 1, 2번째 섞어서 */
+        // background-color: lighten($color, 10%); // 밝게
+        // background-color: saturate($color, 40%); // 채도 높게
+        background-color: desaturate($color, 40%); // 채도 낮게
+        // background-color: grayscale($color);
+        background-color: rgba($color, .5)
+    }
+}
+
+// 가져오기
+
+@import "./sub.scss", "./sub2.scss";
+
+// 데이터 종류
+$number: 1; // .5, 100px, 1em
+$string: bold; // relative, "../images/a.png"
+$color: red; // blue, #fff00, rgba(0,0,0,0.1)
+$boolean: true; // false
+$null: null;
+$list: orange, royalblue, yellow; // 배열과 유사 
+$map: ( // 객체 데이터와 유사
+    o: orange,
+    r: royalblue,
+    y: yellow
+);
+
+@each $c in $map {
+    .box {
+        color: $c
+    }
+};
+
+@each $key, $v in $map {
+        .box-#{$key} {
+            color: $v
+        }
+    }; 
+
+@mixin left-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    @content;
+}
+.container {
+    width: 100px;
+    height: 100px;
+    @include left-top;
+}
+.box {
+    width: 200px;
+    height: 300px;
+    @include left-top {
+        bottom: 0;
+        right: 0;
+        margin: auto;
+    }
+}
+
